@@ -1,0 +1,243 @@
+import { Escrow, EscrowState } from "@/types/escrow";
+
+// Addresses are fake but valid-format G... 56-char Stellar addresses
+const BUYER_ADDR = "GAHJJJKMOKYE4RVPZEWZTKH5FVI4PA3VL7GK2LFNUBSGBV3QLKQXHXN";
+const SELLER_ADDR = "GBVZQ4OKWDQNHKZQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQ";
+const ARBITRATOR_ADDR = "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGZQE3NMQKGLAA5CHHDKQJQ";
+const OTHER_BUYER = "GDXCJQ4OKWDQNHKZQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJQJ";
+
+export const MOCK_MY_ADDRESS = BUYER_ADDR;
+
+export const MOCK_ESCROWS: Escrow[] = [
+  {
+    id: "clx001",
+    escrowId: "ESC-0001",
+    buyer: BUYER_ADDR,
+    seller: SELLER_ADDR,
+    arbitrator: ARBITRATOR_ADDR,
+    amount: "100000000", // 10 USDC (6 decimals)
+    tokenAddress: "USDC",
+    tokenSymbol: "USDC",
+    state: EscrowState.INIT,
+    deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    events: [
+      {
+        id: "evt001",
+        escrowId: "ESC-0001",
+        eventType: "escrow_created",
+        ledger: 1234567,
+        txHash: "abc123def456abc123def456abc123def456abc123def456abc123def456ab12",
+        payload: { buyer: BUYER_ADDR, seller: SELLER_ADDR },
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+  },
+  {
+    id: "clx002",
+    escrowId: "ESC-0002",
+    buyer: BUYER_ADDR,
+    seller: SELLER_ADDR,
+    arbitrator: ARBITRATOR_ADDR,
+    amount: "500000000", // 50 USDC
+    tokenAddress: "USDC",
+    tokenSymbol: "USDC",
+    state: EscrowState.FUNDED,
+    deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+    events: [
+      {
+        id: "evt002",
+        escrowId: "ESC-0002",
+        eventType: "escrow_created",
+        ledger: 1234500,
+        txHash: "bcd234efg567bcd234efg567bcd234efg567bcd234efg567bcd234efg567bc23",
+        payload: {},
+        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt003",
+        escrowId: "ESC-0002",
+        eventType: "escrow_funded",
+        ledger: 1234600,
+        txHash: "cde345fgh678cde345fgh678cde345fgh678cde345fgh678cde345fgh678cd34",
+        payload: {},
+        createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+  },
+  {
+    id: "clx003",
+    escrowId: "ESC-0003",
+    buyer: BUYER_ADDR,
+    seller: SELLER_ADDR,
+    arbitrator: null,
+    amount: "10000000000", // 1000 XLM (7 decimals)
+    tokenAddress: "XLM",
+    tokenSymbol: "XLM",
+    state: EscrowState.COMPLETED,
+    deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    events: [
+      {
+        id: "evt004",
+        escrowId: "ESC-0003",
+        eventType: "escrow_created",
+        ledger: 1230000,
+        txHash: "def456ghi789def456ghi789def456ghi789def456ghi789def456ghi789de45",
+        payload: {},
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt005",
+        escrowId: "ESC-0003",
+        eventType: "escrow_funded",
+        ledger: 1230100,
+        txHash: "efg567hij890efg567hij890efg567hij890efg567hij890efg567hij890ef56",
+        payload: {},
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt006",
+        escrowId: "ESC-0003",
+        eventType: "delivery_confirmed",
+        ledger: 1231000,
+        txHash: "fgh678ijk901fgh678ijk901fgh678ijk901fgh678ijk901fgh678ijk901fg67",
+        payload: {},
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+  },
+  {
+    id: "clx004",
+    escrowId: "ESC-0004",
+    buyer: OTHER_BUYER,
+    seller: BUYER_ADDR, // current user is the SELLER here
+    arbitrator: ARBITRATOR_ADDR,
+    amount: "250000000", // 25 USDC
+    tokenAddress: "USDC",
+    tokenSymbol: "USDC",
+    state: EscrowState.FUNDED,
+    deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    events: [
+      {
+        id: "evt007",
+        escrowId: "ESC-0004",
+        eventType: "escrow_created",
+        ledger: 1232000,
+        txHash: "ghi789jkl012ghi789jkl012ghi789jkl012ghi789jkl012ghi789jkl012gh78",
+        payload: {},
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt008",
+        escrowId: "ESC-0004",
+        eventType: "escrow_funded",
+        ledger: 1232100,
+        txHash: "hij890klm123hij890klm123hij890klm123hij890klm123hij890klm123hi89",
+        payload: {},
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+  },
+  {
+    id: "clx005",
+    escrowId: "ESC-0005",
+    buyer: OTHER_BUYER,
+    seller: SELLER_ADDR,
+    arbitrator: BUYER_ADDR, // current user is the ARBITRATOR here
+    amount: "750000000", // 75 USDC
+    tokenAddress: "USDC",
+    tokenSymbol: "USDC",
+    state: EscrowState.DISPUTED,
+    deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+    events: [
+      {
+        id: "evt009",
+        escrowId: "ESC-0005",
+        eventType: "escrow_created",
+        ledger: 1233000,
+        txHash: "ijk901lmn234ijk901lmn234ijk901lmn234ijk901lmn234ijk901lmn234ij90",
+        payload: {},
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt010",
+        escrowId: "ESC-0005",
+        eventType: "escrow_funded",
+        ledger: 1233100,
+        txHash: "jkl012mno345jkl012mno345jkl012mno345jkl012mno345jkl012mno345jk01",
+        payload: {},
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt011",
+        escrowId: "ESC-0005",
+        eventType: "dispute_raised",
+        ledger: 1233500,
+        txHash: "klm123nop456klm123nop456klm123nop456klm123nop456klm123nop456kl12",
+        payload: { raisedBy: OTHER_BUYER },
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+  },
+  {
+    id: "clx006",
+    escrowId: "ESC-0006",
+    buyer: BUYER_ADDR,
+    seller: SELLER_ADDR,
+    arbitrator: ARBITRATOR_ADDR,
+    amount: "50000000", // 5 USDC
+    tokenAddress: "USDC",
+    tokenSymbol: "USDC",
+    state: EscrowState.REFUNDED,
+    deadline: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    events: [
+      {
+        id: "evt012",
+        escrowId: "ESC-0006",
+        eventType: "escrow_created",
+        ledger: 1220000,
+        txHash: "lmn234opq567lmn234opq567lmn234opq567lmn234opq567lmn234opq567lm23",
+        payload: {},
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt013",
+        escrowId: "ESC-0006",
+        eventType: "escrow_funded",
+        ledger: 1220100,
+        txHash: "mno345pqr678mno345pqr678mno345pqr678mno345pqr678mno345pqr678mn34",
+        payload: {},
+        createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt014",
+        escrowId: "ESC-0006",
+        eventType: "dispute_raised",
+        ledger: 1221000,
+        txHash: "nop456qrs789nop456qrs789nop456qrs789nop456qrs789nop456qrs789no45",
+        payload: {},
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "evt015",
+        escrowId: "ESC-0006",
+        eventType: "dispute_resolved",
+        ledger: 1222000,
+        txHash: "opq567rst890opq567rst890opq567rst890opq567rst890opq567rst890op56",
+        payload: { releaseToSeller: false },
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+  },
+];
